@@ -23,6 +23,10 @@ clean:
 	go clean
 	rm ./bin/memcached-client
 
+# Run the tests for the set command
+test set:
+	go test -v ./internal/app/set
+
 # View the makefile commads
 view:
 	@cat Makefile
