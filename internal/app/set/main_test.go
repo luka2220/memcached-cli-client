@@ -5,38 +5,82 @@ import (
 	"testing"
 )
 
-func TestSetSerializeCommand(t *testing.T) {
-	buffer1cmd, err := SerializeSetCommand("greeting", 0, 0, 13)
+func TestSerializeSetCommand(t *testing.T) {
+	// NOTE: Test case 1 => "set greeting 0 0 13\r\n"
+	// 13 bytes for the string "Hello, World!"
+	// no expiration time
+	t1, err := SerializeSetCommand("greeting", 0, 0, 13)
 	if err != nil {
-		e := fmt.Sprintf("An error occured where is shouldn't have: %v", err)
+		e := fmt.Sprintf("An error occured calling SerializeSetCommand: %v", err)
 		t.Fatal(e)
 	}
 
-	// expected size is 23 bytes => set greeting 0 0 13\r\n
-	if buffer1cmd.Len() != 23 {
-		e := fmt.Sprintf("Buffer size incorrect, got=%d, expected=%d", buffer1cmd.Len(), 23)
+	// expected command size is 23 bytes => set greeting 0 0 13\r\n
+	if t1.Len() != 23 {
+		e := fmt.Sprintf("Buffer size incorrect, got=%d bytes, expected=%d bytes", t1.Len(), 23)
 		t.Fatal(e)
 	}
 
-	if buffer1cmd.String() != "set greeting 0 0 13\r\n" {
-		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", buffer1cmd.String(), "set greeting 0 0 13\r\n")
+	if t1.String() != "set greeting 0 0 13\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t1.String(), "set greeting 0 0 13\r\n")
 		t.Fatal(e)
 	}
 
-	buffer1dataBlock, err := SerializeSetDataBlock("Hello, World!")
+	// NOTE: Test case 2 => "set secret 0 900 44\r\n"
+	// 44 bytes for the string "secret message for memcached server to store"
+	// 900 second expiration time
+	t2, err := SerializeSetCommand("secret", 0, 900, 44)
 	if err != nil {
-		e := fmt.Sprintf("An error occured where is shouldn't have: %v", err)
+		e := fmt.Sprintf("An error occured calling SerializeSetCommand: %v", err)
+		t.Fatal(e)
+	}
+
+	// expected command size is 23 bytes => set secret 0 900 44\r\n
+	if t2.Len() != 23 {
+		e := fmt.Sprintf("Buffer size incorrect, got=%d bytes, expected=%d bytes", t2.Len(), 23)
+		t.Fatal(e)
+	}
+
+	if t2.String() != "set secret 0 900 44\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "set secret 0 900 44\r\n")
+		t.Fatal(e)
+	}
+}
+
+func TestSerializeSetDataBlock(t *testing.T) {
+	// NOTE: Test case 1 => "Hello, World!\r\n"
+	t1, err := SerializeSetDataBlock("Hello, World!")
+	if err != nil {
+		e := fmt.Sprintf("An error occured calling SerializeSetDataBlock: %v", err)
 		t.Fatal(e)
 	}
 
 	// expected size is 17 bytes => Hello, World!\r\n
-	if buffer1dataBlock.Len() != 17 {
-		e := fmt.Sprintf("Buffer size incorrect, got=%d, expected=%d", buffer1dataBlock.Len(), 17)
+	if t1.Len() != 17 {
+		e := fmt.Sprintf("Buffer size incorrect, got=%d, expected=%d", t1.Len(), 17)
 		t.Fatal(e)
 	}
 
-	if buffer1dataBlock.String() != "Hello, World!" {
-		e := fmt.Sprintf("Incorrect buffer string value, got=%s, expected=%s", buffer1dataBlock.String(), "Hello, World!")
+	if t1.String() != "Hello, World!\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string value, got=%s, expected=%s", t1.String(), "Hello, World!\r\n")
+		t.Fatal(e)
+	}
+
+	// NOTE: Test case 2 => "secret message for memcached server to store\r\n"
+	t2, err := SerializeSetDataBlock("secret message for memcached server to store")
+	if err != nil {
+		e := fmt.Sprintf("An error occured calling SerializeSetDataBlock: %v", err)
+		t.Fatal(e)
+	}
+
+	// expected size is 48 bytes => secret message for memcached server to store\r\n
+	if t2.Len() != 48 {
+		e := fmt.Sprintf("Buffer size incorrect, got=%d bytes, expected=%d bytes", t2.Len(), 48)
+		t.Fatal(e)
+	}
+
+	if t2.String() != "secret message for memcached server to store\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string value, got=%s, expected=%s", t2.String(), "secret message for memcached server to store\r\n")
 		t.Fatal(e)
 	}
 }
