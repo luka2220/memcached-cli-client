@@ -7,7 +7,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "memcached-client",
+	Use:   "ccmc",
 	Short: "Client for interacting with a memcached server",
 	Long:  `Memcached is a simple yet powerful server with client libraries in many programming languages. But sometimes it’s useful to be able to interact with a server from the command line. For example it’s useful to be able to use curl to fetch web pages or test/automate calls to RESTful API.`,
 	// Uncomment the following line if your bare application
