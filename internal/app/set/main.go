@@ -14,3 +14,8 @@ func SerializeSetCommand(key string, flags uint16, exptime int, bytes int) (*byt
 func SerializeSetDataBlock(dataBlock string) (*bytes.Buffer, error) {
 	return nil, errors.New("Function not yet implemented...")
 }
+
+// Creates a string of the byte stream response from the server
+func DeserializeSetCommand(b *bytes.Buffer) (string, error) {
+	return "", errors.New("Function not yet implemented...")
+}

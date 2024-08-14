@@ -1,6 +1,7 @@
 package set
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 )
@@ -81,6 +82,40 @@ func TestSerializeSetDataBlock(t *testing.T) {
 
 	if t2.String() != "secret message for memcached server to store\r\n" {
 		e := fmt.Sprintf("Incorrect buffer string value, got=%s, expected=%s", t2.String(), "secret message for memcached server to store\r\n")
+		t.Fatal(e)
+	}
+}
+
+func TestDeserializeSetCommand(t *testing.T) {
+	// The tcp server will responsed to a command with one of the following:
+	// STORED\r\n
+	// NOT_STORED\r\n
+
+	// NOTE: Test case 1 => STORED\r\n
+	t1buffer := bytes.NewBufferString("STORED\r\n")
+
+	t1, err := DeserializeSetCommand(t1buffer)
+	if err != nil {
+		e := fmt.Sprintf("An error occured calling DeserializeSetCommand: %v", err)
+		t.Fatal(e)
+	}
+
+	if t1 != "STORED\r\n" {
+		e := fmt.Sprintf("Deserialized buffer is incorrect, got=%s, expected=%s", t1, "STORED\r\n")
+		t.Fatal(e)
+	}
+
+	// NOTE: Test case 2 => NOT_STORED\r\n
+	t2buffer := bytes.NewBufferString("NOT_STORED\r\n")
+
+	t2, err := DeserializeSetCommand(t2buffer)
+	if err != nil {
+		e := fmt.Sprintf("An error occured calling DeserializeSetCommand: %v", err)
+		t.Fatal(e)
+	}
+
+	if t1 != "NOT_STORED\r\n" {
+		e := fmt.Sprintf("Deserialized buffer is incorrect, got=%s, expected=%s", t2, "NOT_STORED\r\n")
 		t.Fatal(e)
 	}
 }
