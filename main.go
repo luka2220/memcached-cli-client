@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/luka2220/tools/memcached-client/cmd"
+	"github.com/luka2220/tools/ccmc/cmd"
 )
 
 func main() {
