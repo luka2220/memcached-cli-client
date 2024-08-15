@@ -6,8 +6,8 @@ import (
 )
 
 // Creates the byte stream for the command section of the tcp protocol
-func SerializeSetCommand(key string, flags uint16, exptime int, size int) *bytes.Buffer {
-	msg := fmt.Sprintf("set %s %d %d %d\r\n", key, flags, exptime, size)
+func SerializeSetCommand(cmd string, key string, flags uint16, exptime int, size int) *bytes.Buffer {
+	msg := fmt.Sprintf("%s %s %d %d %d\r\n", cmd, key, flags, exptime, size)
 	byteStream := bytes.NewBufferString(msg)
 
 	return byteStream
