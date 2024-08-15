@@ -2,15 +2,24 @@ package serialization
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 )
 
 // Creates the byte stream for the command section of the tcp protocol
+// Valid commands: set, add, replace, append, prepend
 func SerializeCommand(cmd string, key string, flags uint16, exptime int, size int) (*bytes.Buffer, error) {
-	msg := fmt.Sprintf("%s %s %d %d %d\r\n", cmd, key, flags, exptime, size)
-	byteStream := bytes.NewBufferString(msg)
 
-	return byteStream, nil
+	switch cmd {
+	case "set", "add", "replace", "append", "prepend":
+		msg := fmt.Sprintf("%s %s %d %d %d\r\n", cmd, key, flags, exptime, size)
+		byteStream := bytes.NewBufferString(msg)
+
+		return byteStream, nil
+	}
+
+	e := fmt.Sprintf("%s is not a valid command. Enter one of set, add, replace, append, prepend", cmd)
+	return nil, errors.New(e)
 }
 
 // Creates the byte stream for the datablock section of the tcp protocol
