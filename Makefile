@@ -23,9 +23,9 @@ clean:
 	go clean
 	rm ./bin/memcached-client
 
-# Run the tests for the set command
-test set:
-	go test -v ./internal/app/set
+# Run the tests for command serialization
+test cmd serialization:
+	go test -v ./internal/pkg/serialization
 
 # View the makefile commads
 view:
