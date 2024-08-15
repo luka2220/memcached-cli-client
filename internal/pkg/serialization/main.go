@@ -1,4 +1,4 @@
-package set
+package serialization
 
 import (
 	"bytes"
@@ -6,15 +6,15 @@ import (
 )
 
 // Creates the byte stream for the command section of the tcp protocol
-func SerializeSetCommand(cmd string, key string, flags uint16, exptime int, size int) *bytes.Buffer {
+func SerializeCommand(cmd string, key string, flags uint16, exptime int, size int) (*bytes.Buffer, error) {
 	msg := fmt.Sprintf("%s %s %d %d %d\r\n", cmd, key, flags, exptime, size)
 	byteStream := bytes.NewBufferString(msg)
 
-	return byteStream
+	return byteStream, nil
 }
 
 // Creates the byte stream for the datablock section of the tcp protocol
-func SerializeSetDataBlock(dataBlock string) *bytes.Buffer {
+func SerializeDataBlock(dataBlock string) *bytes.Buffer {
 	msg := fmt.Sprintf("%s\r\n", dataBlock)
 	byteStream := bytes.NewBufferString(msg)
 
@@ -22,7 +22,7 @@ func SerializeSetDataBlock(dataBlock string) *bytes.Buffer {
 }
 
 // Creates a string of the byte stream response from the server
-func DeserializeSetCommand(b *bytes.Buffer) string {
+func DeserializeCommand(b *bytes.Buffer) string {
 	msg := b.String()
 
 	return msg
