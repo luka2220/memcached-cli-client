@@ -2,20 +2,28 @@ package set
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 )
 
 // Creates the byte stream for the command section of the tcp protocol
-func SerializeSetCommand(key string, flags uint16, exptime int, bytes int) (*bytes.Buffer, error) {
-	return nil, errors.New("Function not yet implemented...")
+func SerializeSetCommand(key string, flags uint16, exptime int, size int) *bytes.Buffer {
+	msg := fmt.Sprintf("set %s %d %d %d\r\n", key, flags, exptime, size)
+	byteStream := bytes.NewBufferString(msg)
+
+	return byteStream
 }
 
 // Creates the byte stream for the datablock section of the tcp protocol
-func SerializeSetDataBlock(dataBlock string) (*bytes.Buffer, error) {
-	return nil, errors.New("Function not yet implemented...")
+func SerializeSetDataBlock(dataBlock string) *bytes.Buffer {
+	msg := fmt.Sprintf("%s\r\n", dataBlock)
+	byteStream := bytes.NewBufferString(msg)
+
+	return byteStream
 }
 
 // Creates a string of the byte stream response from the server
-func DeserializeSetCommand(b *bytes.Buffer) (string, error) {
-	return "", errors.New("Function not yet implemented...")
+func DeserializeSetCommand(b *bytes.Buffer) string {
+	msg := b.String()
+
+	return msg
 }
