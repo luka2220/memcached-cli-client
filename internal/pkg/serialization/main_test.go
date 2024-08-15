@@ -34,8 +34,8 @@ func TestSerializeCommand(t *testing.T) {
 		t.Fatal(e)
 	}
 
-	if t2.String() != "set secret 0 900 44\r\n" {
-		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "set secret 0 900 44\r\n")
+	if t2.String() != "add secret 0 900 44\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "add secret 0 900 44\r\n")
 		t.Fatal(e)
 	}
 
@@ -71,8 +71,8 @@ func TestSerializeCommand(t *testing.T) {
 		t.Fatal(e)
 	}
 
-	// NOTE: Test case 4 => "prepend data 0 0 7\r\n"
-	t5, err := SerializeCommand("append", "data", 0, 0, 7)
+	// NOTE: Test case 5 => "prepend data 0 0 7\r\n"
+	t5, err := SerializeCommand("prepend", "data", 0, 0, 7)
 	if err != nil {
 		t.Fatal(err)
 	}

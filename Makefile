@@ -25,7 +25,7 @@ clean:
 
 # Run the tests for the set command
 test set:
-	go test -v ./internal/app/set
+	go test -v ./internal/pkg/serialization
 
 # View the makefile commads
 view:
