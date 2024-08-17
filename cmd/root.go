@@ -42,6 +42,6 @@ func Execute() {
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	rootCmd.Flags().StringVarP(&host, "host", "o", "localhost", "Host address of tcp client")
-	rootCmd.Flags().IntVarP(&port, "port", "p", 11211, "Port of the client address")
+	rootCmd.PersistentFlags().StringVarP(&host, "host", "o", "localhost", "Host address of tcp client")
+	rootCmd.PersistentFlags().IntVarP(&port, "port", "p", 11211, "Port of the client address")
 }
