@@ -16,12 +16,12 @@ build:
 
 # Run the root command 
 run: build
-	@./bin/memcached-client
+	@./bin/ccmc
 
 # Clean project files and remove current binary in ./bin
 clean:
 	go clean
-	rm ./bin/memcached-client
+	rm ./bin/ccmc
 
 # Run the tests for command serialization
 test cmd serialization:
