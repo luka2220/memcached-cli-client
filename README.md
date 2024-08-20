@@ -9,8 +9,8 @@ It uses a simple text-based network protocol, making it a great platform to lear
 
 ## Commands
 
-- host flag (-o): specifies a hostname for the client, default is localhost
-- port flags (-p): specifies a port number for the client, default is 11211
+- host flag (-o): specifies the host where the server is running, default is localhost
+- port flags (-p): specifies te port number the server is running, default is 11211
 
 **Set** _store the data associated with the key_ <br>
 
