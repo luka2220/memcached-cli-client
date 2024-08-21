@@ -151,12 +151,63 @@ func SendAddCommand(host string, port int, key string, value string) {
 		switch message {
 		case "ERROR\r\n":
 			fmt.Println("The server responded with an error")
-			break
+			return
 		case "NOT_STORED\r\n":
 			fmt.Println("key already exists in the cache")
-			break
+			return
 		case "STORED\r\n":
-			break
+			return
+		default:
+			continue
+		}
+	}
+}
+
+func SendReplaceCommand(host string, port int, key string, value string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error starting the TCP client: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+
+	buffCmd, err := serialization.SerializeCommand("replace", key, 0, 0, len(value))
+	if err != nil {
+		fmt.Println("Error serializing the command: ", err)
+		return
+	}
+
+	_, err = client.conn.Write(buffCmd.Bytes())
+	if err != nil {
+		fmt.Println("Error sending command to server: ", err)
+		return
+	}
+
+	buffData := serialization.SerializeDataBlock(value)
+	_, err = client.conn.Write(buffData.Bytes())
+	if err != nil {
+		fmt.Println("Error sending data block to server: ", err)
+	}
+
+	reader := bufio.NewReader(client.conn)
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading response from server: ", err)
+			return
+		}
+
+		switch message {
+		case "ERROR\r\n":
+			fmt.Println("Error replacing value: ", err)
+			return
+		case "NOT_STORED\r\n":
+			fmt.Printf("Error replacing %s, does not exist on server\n", key)
+			return
+		case "STORED\r\n":
+			return
 		default:
 			continue
 		}
