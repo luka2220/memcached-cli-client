@@ -110,3 +110,5 @@ func SendGetCommand(host string, port int, key string) {
 	v := strings.Split(response, "\r\n")
 	fmt.Println(v[len(v)-2])
 }
+
+func SendAddCommand() {}
