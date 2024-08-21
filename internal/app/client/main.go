@@ -3,9 +3,10 @@ package client
 import (
 	"bufio"
 	"fmt"
-	"github.com/luka2220/tools/ccmc/internal/pkg/serialization"
 	"net"
 	"strings"
+
+	"github.com/luka2220/tools/ccmc/internal/pkg/serialization"
 )
 
 type tcpClient struct {
@@ -38,52 +39,52 @@ func initClient(host string, port int) (*tcpClient, error) {
 func SendSetCommand(host string, port int, key string, value string) {
 	client, err := initClient(host, port)
 	if err != nil {
-		e := fmt.Sprintf("An error occured initializing the server: %v", err)
-		panic(e)
+		fmt.Printf("An error occured initializing the server: %v", err)
+		return
 	}
 
 	defer client.conn.Close()
 
 	cmd, err := serialization.SerializeCommand("set", key, 0, 0, len(value))
 	if err != nil {
-		e := fmt.Sprintf("An error occured serializing data: %v", err)
-		panic(e)
+		fmt.Printf("An error occured serializing data: %v", err)
+		return
 	}
 
 	data := serialization.SerializeDataBlock(value)
 
 	_, err = client.conn.Write(cmd.Bytes())
 	if err != nil {
-		e := fmt.Sprintf("An error occured sending data to the server: %v", err)
-		panic(e)
+		fmt.Printf("An error occured sending data to the server: %v", err)
+		return
 	}
 
 	_, err = client.conn.Write(data.Bytes())
 	if err != nil {
-		e := fmt.Sprintf("An error occured sending data to the server: %v", err)
-		panic(e)
+		fmt.Printf("An error occured sending data to the server: %v", err)
+		return
 	}
 }
 
 func SendGetCommand(host string, port int, key string) {
 	client, err := initClient(host, port)
 	if err != nil {
-		e := fmt.Sprintf("An error occured connecting to the server: %v", err)
-		panic(e)
+		fmt.Printf("An error occured connecting to the server: %v", err)
+		return
 	}
 
 	defer client.conn.Close()
 
 	cmd, err := serialization.SerializeCommand("get", key, 0, 0, 0)
 	if err != nil {
-		e := fmt.Sprintf("An error had occured serializing the data: %v", err)
-		panic(e)
+		fmt.Printf("An error had occured serializing the data: %v", err)
+		return
 	}
 
 	_, err = client.conn.Write(cmd.Bytes())
 	if err != nil {
-		e := fmt.Sprintf("An error occured sending data to the client: %v", err)
-		panic(e)
+		fmt.Printf("An error occured sending data to the client: %v", err)
+		return
 	}
 
 	reader := bufio.NewReader(client.conn)
