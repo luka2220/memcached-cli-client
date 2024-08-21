@@ -63,8 +63,6 @@ func SendSetCommand(host string, port int, key string, value string) {
 		e := fmt.Sprintf("An error occured sending data to the server: %v", err)
 		panic(e)
 	}
-
-	fmt.Printf("stored key=%s, value=%s at %s", key, value, client.address)
 }
 
 func SendGetCommand(host string, port int, key string) {
@@ -107,6 +105,7 @@ func SendGetCommand(host string, port int, key string) {
 		response += message
 	}
 
+	// Extract the stored value from the server's response
 	v := strings.Split(response, "\r\n")
 	fmt.Println(v[len(v)-2])
 }
