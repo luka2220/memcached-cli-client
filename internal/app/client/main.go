@@ -3,10 +3,9 @@ package client
 import (
 	"bufio"
 	"fmt"
+	"github.com/luka2220/tools/ccmc/internal/pkg/serialization"
 	"net"
 	"strings"
-
-	"github.com/luka2220/tools/ccmc/internal/pkg/serialization"
 )
 
 type tcpClient struct {
