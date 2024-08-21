@@ -106,9 +106,59 @@ func SendGetCommand(host string, port int, key string) {
 		response += message
 	}
 
-	// Extract the stored value from the server's response
+	// BUG: Something is going wrong here...
+	// I need to find a better way to deserialize and parse the response from the server...
+	// Another issue if we try to get a key that does not exist and index out of range error is thrown...
 	v := strings.Split(response, "\r\n")
 	fmt.Println(v[len(v)-2])
 }
 
-func SendAddCommand() {}
+func SendAddCommand(host string, port int, key string, value string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to the client: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+
+	buffCmd, err := serialization.SerializeCommand("add", key, 0, 0, len(value))
+	if err != nil {
+		fmt.Println("Error serializing add command: ", err)
+		return
+	}
+
+	_, err = client.conn.Write(buffCmd.Bytes())
+	if err != nil {
+		fmt.Println("Error sending data to the server: ", err)
+	}
+
+	dataCmd := serialization.SerializeDataBlock(value)
+	_, err = client.conn.Write(dataCmd.Bytes())
+	if err != nil {
+		fmt.Println("Error sending data to the server: ", err)
+	}
+
+	reader := bufio.NewReader(client.conn)
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading data from server: ", err)
+			return
+		}
+
+		switch message {
+		case "ERROR\r\n":
+			fmt.Println("The server responded with an error")
+			break
+		case "NOT_STORED\r\n":
+			fmt.Println("key already exists in the cache")
+			break
+		case "STORED\r\n":
+			break
+		default:
+			continue
+		}
+	}
+}
