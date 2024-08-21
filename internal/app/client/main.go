@@ -1,8 +1,10 @@
 package client
 
 import (
+	"bufio"
 	"fmt"
 	"net"
+	"strings"
 
 	"github.com/luka2220/tools/ccmc/internal/pkg/serialization"
 )
@@ -35,13 +37,13 @@ func initClient(host string, port int) (*tcpClient, error) {
 }
 
 func SendSetCommand(host string, port int, key string, value string) {
-	c, err := initClient(host, port)
+	client, err := initClient(host, port)
 	if err != nil {
-		e := fmt.Sprintf("An error occured initializing the tcp client: %v", err)
+		e := fmt.Sprintf("An error occured initializing the server: %v", err)
 		panic(e)
 	}
 
-	defer c.conn.Close()
+	defer client.conn.Close()
 
 	cmd, err := serialization.SerializeCommand("set", key, 0, 0, len(value))
 	if err != nil {
@@ -51,17 +53,61 @@ func SendSetCommand(host string, port int, key string, value string) {
 
 	data := serialization.SerializeDataBlock(value)
 
-	_, err = c.conn.Write(cmd.Bytes())
+	_, err = client.conn.Write(cmd.Bytes())
 	if err != nil {
 		e := fmt.Sprintf("An error occured sending data to the server: %v", err)
 		panic(e)
 	}
 
-	_, err = c.conn.Write(data.Bytes())
+	_, err = client.conn.Write(data.Bytes())
 	if err != nil {
 		e := fmt.Sprintf("An error occured sending data to the server: %v", err)
 		panic(e)
 	}
 
-	fmt.Printf("stored key=%s, value=%s at %s", key, value, c.address)
+	fmt.Printf("stored key=%s, value=%s at %s", key, value, client.address)
+}
+
+func SendGetCommand(host string, port int, key string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		e := fmt.Sprintf("An error occured connecting to the server: %v", err)
+		panic(e)
+	}
+
+	defer client.conn.Close()
+
+	cmd, err := serialization.SerializeCommand("get", key, 0, 0, 0)
+	if err != nil {
+		e := fmt.Sprintf("An error had occured serializing the data: %v", err)
+		panic(e)
+	}
+
+	_, err = client.conn.Write(cmd.Bytes())
+	if err != nil {
+		e := fmt.Sprintf("An error occured sending data to the client: %v", err)
+		panic(e)
+	}
+
+	reader := bufio.NewReader(client.conn)
+
+	// Listen for a response from the server
+	var response string
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading from the server: ", err)
+			break
+		}
+
+		if message == "END\r\n" {
+			break
+		}
+
+		response += message
+	}
+
+	v := strings.Split(response, "\r\n")
+	fmt.Println(v[len(v)-2])
 }
