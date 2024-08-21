@@ -162,3 +162,13 @@ func SendAddCommand(host string, port int, key string, value string) {
 		}
 	}
 }
+
+func SendReplaceCommand(host string, port int, key string, value string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error starting the TCP client: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+}
