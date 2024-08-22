@@ -3,6 +3,7 @@ package client
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net"
 	"strings"
 
@@ -211,5 +212,58 @@ func SendReplaceCommand(host string, port int, key string, value string) {
 		default:
 			continue
 		}
+	}
+}
+
+func SendAppendCommand(host string, port int, key string, value string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+
+	buffCmd, err := serialization.SerializeCommand("append", key, 0, 0, len(value))
+	if err != nil {
+		fmt.Println("Error serializing command: ", err)
+		return
+	}
+
+	_, err = client.conn.Write(buffCmd.Bytes())
+	if err != nil {
+		fmt.Println("Error sending command to server: ", err)
+		return
+	}
+
+	buffData := serialization.SerializeDataBlock(value)
+	_, err = client.conn.Write(buffData.Bytes())
+
+	reader := bufio.NewReader(client.conn)
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			fmt.Println("Error reading from the server: ", err)
+			return
+		}
+
+		switch message {
+		case "ERROR\r\n":
+			fmt.Println("Server responded with an error...")
+			return
+		case "NOT_STORED\r\n":
+			fmt.Printf("%s is not stored in the memcached server\n", key)
+			return
+		case "STORED\r\n":
+			return
+		default:
+			continue
+		}
+
 	}
 }
