@@ -213,3 +213,13 @@ func SendReplaceCommand(host string, port int, key string, value string) {
 		}
 	}
 }
+
+func SendAppendCommand(host string, port int, key string, value string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+}
