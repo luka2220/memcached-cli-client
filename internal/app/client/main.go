@@ -267,3 +267,59 @@ func SendAppendCommand(host string, port int, key string, value string) {
 
 	}
 }
+
+func SendPrependCommmand(host string, port int, key string, value string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+
+	buffCmd, err := serialization.SerializeCommand("prepend", key, 0, 0, len(value))
+	if err != nil {
+		fmt.Println("Error serializing command: ", err)
+		return
+	}
+
+	_, err = client.conn.Write(buffCmd.Bytes())
+	if err != nil {
+		fmt.Println("Error writting command to server: ", err)
+		return
+	}
+
+	buffData := serialization.SerializeDataBlock(value)
+	_, err = client.conn.Write(buffData.Bytes())
+	if err != nil {
+		fmt.Println("Error writting data to server:", err)
+		return
+	}
+
+	reader := bufio.NewReader(client.conn)
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			fmt.Println("Error reading data from server: ", err)
+			return
+		}
+
+		switch message {
+		case "ERROR\r\n":
+			fmt.Println("Server responded with an error")
+			return
+		case "NOT_STORED\r\n":
+			fmt.Println("key & value not stored, check if the key exists on the server")
+			return
+		case "STORED\r\n":
+			return
+		default:
+			continue
+		}
+	}
+}
