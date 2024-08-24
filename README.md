@@ -1,4 +1,4 @@
-https://github.com/luka2220/memcached-cli-client/actions/workflows/ci.yaml/badge.svg
+![code coverage badge](https://github.com/luka2220/memcached-cli-client/actions/workflows/ci.yaml/badge.svg)
 
 ## Description
 
