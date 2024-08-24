@@ -25,4 +25,4 @@ jobs:
         run: go fmt
 
       - name: Check if all unit tests are passing
-        run: go test ./...
+        run: go test ./... -cover
