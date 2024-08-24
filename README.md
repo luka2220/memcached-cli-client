@@ -1,3 +1,5 @@
+https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE>/badge.svg
+
 ## Description
 
 This project aims to create a cli client that can interact with the Memcached server. The client will send commands based on the memcached TCP communication protocol.
