@@ -20,3 +20,9 @@ jobs:
 
       - name: Echo Go Version
         run: go version
+      
+      - name: Run go fmt 
+        run: go fmt
+
+      - name: Check if all unit tests are passing
+        run: go test ./...
