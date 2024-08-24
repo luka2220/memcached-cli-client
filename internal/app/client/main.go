@@ -323,3 +323,13 @@ func SendPrependCommmand(host string, port int, key string, value string) {
 		}
 	}
 }
+
+func SendCasCommand(host string, port int, key string, value string, token int) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+}
