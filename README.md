@@ -1,4 +1,4 @@
-https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE>/badge.svg
+https://github.com/luka2220/memcached-cli-client/actions/workflows/ci.yaml/badge.svg
 
 ## Description
 
