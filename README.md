@@ -1,3 +1,5 @@
+![code coverage badge](https://github.com/luka2220/memcached-cli-client/actions/workflows/ci.yaml/badge.svg)
+
 ## Description
 
 This project aims to create a cli client that can interact with the Memcached server. The client will send commands based on the memcached TCP communication protocol.
