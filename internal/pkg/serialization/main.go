@@ -9,7 +9,6 @@ import (
 // Creates the byte stream for the command section of the tcp protocol
 // Valid commands: set, get, add, replace, append, prepend
 func SerializeCommand(cmd string, key string, flags uint16, exptime int, size int) (*bytes.Buffer, error) {
-
 	switch cmd {
 	case "set", "get", "add", "replace", "append", "prepend":
 		msg := fmt.Sprintf("%s %s %d %d %d\r\n", cmd, key, flags, exptime, size)
@@ -20,6 +19,14 @@ func SerializeCommand(cmd string, key string, flags uint16, exptime int, size in
 
 	e := fmt.Sprintf("%s is not a valid command. Enter one of set, add, replace, append, prepend", cmd)
 	return nil, errors.New(e)
+}
+
+// Creates the byte stream for the cas (check and set) operation
+func SerializeCASCommand(key string, flags uint16, exptime int, size int, token int) *bytes.Buffer {
+	cas := fmt.Sprintf("cas %s %d %d %d %d\r\n", key, flags, exptime, size, token)
+	casStream := bytes.NewBufferString(cas)
+
+	return casStream
 }
 
 // Creates the byte stream for the datablock section of the tcp protocol
