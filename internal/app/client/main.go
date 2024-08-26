@@ -90,11 +90,14 @@ func SendGetCommand(host string, port int, key string) {
 
 	reader := bufio.NewReader(client.conn)
 
-	// Listen for a response from the server
 	var response string
 
 	for {
 		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return
+		}
+
 		if err != nil {
 			fmt.Println("Error reading from the server: ", err)
 			break
@@ -144,6 +147,10 @@ func SendAddCommand(host string, port int, key string, value string) {
 
 	for {
 		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return
+		}
+
 		if err != nil {
 			fmt.Println("Error reading data from server: ", err)
 			return
@@ -195,6 +202,10 @@ func SendReplaceCommand(host string, port int, key string, value string) {
 
 	for {
 		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return
+		}
+
 		if err != nil {
 			fmt.Println("Error reading response from server: ", err)
 			return
@@ -244,7 +255,7 @@ func SendAppendCommand(host string, port int, key string, value string) {
 	for {
 		message, err := reader.ReadString('\n')
 		if err == io.EOF {
-			break
+			return
 		}
 
 		if err != nil {
@@ -264,7 +275,6 @@ func SendAppendCommand(host string, port int, key string, value string) {
 		default:
 			continue
 		}
-
 	}
 }
 
@@ -301,7 +311,7 @@ func SendPrependCommmand(host string, port int, key string, value string) {
 	for {
 		message, err := reader.ReadString('\n')
 		if err == io.EOF {
-			break
+			return
 		}
 
 		if err != nil {
@@ -332,4 +342,48 @@ func SendCasCommand(host string, port int, key string, value string, token int) 
 	}
 
 	defer client.conn.Close()
+
+	bufferCmd := serialization.SerializeCASCommand(key, 0, 0, len(value), token)
+	_, err = client.conn.Write(bufferCmd.Bytes())
+	if err != nil {
+		fmt.Println("Error sending data to server: ", err)
+		return
+	}
+
+	bufferData := serialization.SerializeDataBlock(value)
+	_, err = client.conn.Write(bufferData.Bytes())
+	if err != nil {
+		fmt.Println("Error sending data to server: ", err)
+		return
+	}
+
+	reader := bufio.NewReader(client.conn)
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return
+		}
+
+		if err != nil {
+			fmt.Println("Error reading data from server: ", err)
+			return
+		}
+
+		switch message {
+		case "ERROR\r\n":
+			fmt.Println("Error from server, could not parse command...")
+			return
+		case "NOT_FOUND\r\n":
+			fmt.Println("Error, key does not exist on server...")
+			return
+		case "EXISTS\r\n":
+			fmt.Println("Error, CAS token provided by the client does not match the current version of the item on the server")
+			return
+		case "STORED\r\n":
+			return
+		default:
+			continue
+		}
+	}
 }
