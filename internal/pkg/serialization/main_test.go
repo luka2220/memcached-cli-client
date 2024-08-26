@@ -23,67 +23,111 @@ func TestSerializeCommand(t *testing.T) {
 		t.Fatal(e)
 	}
 
-	// NOTE: Test case 2 => "add secret 0 900 44\r\n"
-	t2, err := SerializeCommand("add", "secret", 0, 900, 44)
+	// NOTE: Test case 2 => "get store 0 0 0\r\n"
+	t2, err := SerializeCommand("get", "store", 0, 0, 0)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if t2.Len() != 21 {
-		e := fmt.Sprintf("Buffer size incorrect, got=%d bytes, expected=%d bytes", t2.Len(), 21)
+	if t2.Len() != 17 {
+		e := fmt.Sprintf("Incorrect buffer size, got=%d, expected=%d", t2.Len(), 17)
 		t.Fatal(e)
 	}
 
-	if t2.String() != "add secret 0 900 44\r\n" {
-		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "add secret 0 900 44\r\n")
+	if t2.String() != "get store 0 0 0\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "get store 0 0 0\r\n")
 		t.Fatal(e)
 	}
 
-	// NOTE: Test case 3 => "replace greeting 0 0 10\r\n"
-	t3, err := SerializeCommand("replace", "greeting", 0, 0, 10)
+	// NOTE: Test case 3 => "add secret 0 900 44\r\n"
+	t3, err := SerializeCommand("add", "secret", 0, 900, 44)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if t3.Len() != 25 {
-		e := fmt.Sprintf("Buffer size incorrect, got=%d bytes, expected=%d bytes", t3.Len(), 25)
+	if t3.Len() != 21 {
+		e := fmt.Sprintf("Buffer size incorrect, got=%d bytes, expected=%d bytes", t3.Len(), 21)
 		t.Fatal(e)
 	}
 
-	if t3.String() != "replace greeting 0 0 10\r\n" {
-		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t3.String(), "replace greeting 0 0 10\r\n")
+	if t3.String() != "add secret 0 900 44\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t3.String(), "add secret 0 900 44\r\n")
 		t.Fatal(e)
 	}
 
-	// NOTE: Test case 4 => "append secret 0 0 10\r\n"
-	t4, err := SerializeCommand("append", "secret", 0, 0, 10)
+	// NOTE: Test case 4 => "replace greeting 0 0 10\r\n"
+	t4, err := SerializeCommand("replace", "greeting", 0, 0, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if t4.Len() != 22 {
-		e := fmt.Sprintf("Buffer size is incorrect, got=%d bytes, expected=%d bytes", t4.Len(), 22)
+	if t4.Len() != 25 {
+		e := fmt.Sprintf("Buffer size incorrect, got=%d bytes, expected=%d bytes", t4.Len(), 25)
 		t.Fatal(e)
 	}
 
-	if t4.String() != "append secret 0 0 10\r\n" {
-		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t4.String(), "append secret 0 0 10\r\n")
+	if t4.String() != "replace greeting 0 0 10\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t4.String(), "replace greeting 0 0 10\r\n")
 		t.Fatal(e)
 	}
 
-	// NOTE: Test case 5 => "prepend data 0 0 7\r\n"
-	t5, err := SerializeCommand("prepend", "data", 0, 0, 7)
+	// NOTE: Test case 5 => "append secret 0 0 10\r\n"
+	t5, err := SerializeCommand("append", "secret", 0, 0, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if t5.Len() != 20 {
-		e := fmt.Sprintf("Buffer size is incorrect, got=%d bytes, expected=%d bytes", t5.Len(), 20)
+	if t5.Len() != 22 {
+		e := fmt.Sprintf("Buffer size is incorrect, got=%d bytes, expected=%d bytes", t5.Len(), 22)
 		t.Fatal(e)
 	}
 
-	if t5.String() != "prepend data 0 0 7\r\n" {
-		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t5.String(), "prepend data 0 0 7\r\n")
+	if t5.String() != "append secret 0 0 10\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t5.String(), "append secret 0 0 10\r\n")
+		t.Fatal(e)
+	}
+
+	// NOTE: Test case 6 => "prepend data 0 0 7\r\n"
+	t6, err := SerializeCommand("prepend", "data", 0, 0, 7)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if t6.Len() != 20 {
+		e := fmt.Sprintf("Buffer size is incorrect, got=%d bytes, expected=%d bytes", t6.Len(), 20)
+		t.Fatal(e)
+	}
+
+	if t6.String() != "prepend data 0 0 7\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t6.String(), "prepend data 0 0 7\r\n")
+		t.Fatal(e)
+	}
+}
+
+func TestSerializeCASCommand(t *testing.T) {
+	// NOTE: Test case 1 => "cas key 0 0 5 1\r\n"
+	t1 := SerializeCASCommand("key", 0, 0, 5, 1)
+
+	if t1.Len() != 17 {
+		e := fmt.Sprintf("Incorrect buffer length, got=%d, expected=%d", t1.Len(), 17)
+		t.Fatal(e)
+	}
+
+	if t1.String() != "cas key 0 0 5 1\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t1.String(), "cas key 0 0 5 1\r\n")
+		t.Fatal(e)
+	}
+
+	// NOTE: Test case 2 => "cas storage 1 900 25 7\r\n"
+	t2 := SerializeCASCommand("storage", 1, 900, 25, 7)
+
+	if t2.Len() != 24 {
+		e := fmt.Sprintf("Incorrect buffer length, got=%d, expected=%d", t2.Len(), 24)
+		t.Fatal(e)
+	}
+
+	if t2.String() != "cas storage 1 900 25 7\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "cas storage 1 900 25 7\r\n")
 		t.Fatal(e)
 	}
 }

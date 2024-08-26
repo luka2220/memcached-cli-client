@@ -22,8 +22,11 @@ func SerializeCommand(cmd string, key string, flags uint16, exptime int, size in
 }
 
 // Creates the byte stream for the cas (check and set) operation
-func SerializeCASCommand(key string, flags uint16, exptime int, size int, token int) (*bytes.Buffer, error) {
-	return nil, nil
+func SerializeCASCommand(key string, flags uint16, exptime int, size int, token int) *bytes.Buffer {
+	cas := fmt.Sprintf("cas %s %d %d %d %d\r\n", key, flags, exptime, size, token)
+	casStream := bytes.NewBufferString(cas)
+
+	return casStream
 }
 
 // Creates the byte stream for the datablock section of the tcp protocol
