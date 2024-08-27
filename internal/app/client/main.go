@@ -429,7 +429,9 @@ func SendGetsCommand(host string, port int, key string) {
 		case "END\r\n":
 			return
 		default:
+			fmt.Println(message)
 			continue
 		}
+
 	}
 }
