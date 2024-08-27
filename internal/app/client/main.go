@@ -387,3 +387,51 @@ func SendCasCommand(host string, port int, key string, value string, token int) 
 		}
 	}
 }
+
+func SendGetsCommand(host string, port int, key string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+
+	buffCmd, err := serialization.SerializeCommand("gets", key, 0, 0, 0)
+	if err != nil {
+		fmt.Println("Error serializing data: ", err)
+		return
+	}
+
+	_, err = client.conn.Write(buffCmd.Bytes())
+	if err != nil {
+		fmt.Println("Error sending data to server: ", err)
+		return
+	}
+
+	reader := bufio.NewReader(client.conn)
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return
+		}
+
+		if err != nil {
+			fmt.Println("Error reading from server: ", err)
+			return
+		}
+
+		switch message {
+		case "ERROR\r\n":
+			fmt.Println("Error on server, key does not exists")
+			return
+		case "END\r\n":
+			return
+		default:
+			fmt.Println(message)
+			continue
+		}
+
+	}
+}

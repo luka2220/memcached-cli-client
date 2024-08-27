@@ -10,7 +10,7 @@ import (
 // Valid commands: set, get, add, replace, append, prepend
 func SerializeCommand(cmd string, key string, flags uint16, exptime int, size int) (*bytes.Buffer, error) {
 	switch cmd {
-	case "set", "get", "add", "replace", "append", "prepend":
+	case "set", "get", "gets", "add", "replace", "append", "prepend":
 		msg := fmt.Sprintf("%s %s %d %d %d\r\n", cmd, key, flags, exptime, size)
 		byteStream := bytes.NewBufferString(msg)
 
