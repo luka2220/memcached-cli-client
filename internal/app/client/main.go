@@ -387,3 +387,13 @@ func SendCasCommand(host string, port int, key string, value string, token int) 
 		}
 	}
 }
+
+func SendGetsCommand(host string, port int, key string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+}
