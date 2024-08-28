@@ -31,7 +31,7 @@ func SerializeCASCommand(key string, flags uint16, exptime int, size int, token 
 
 // Creates the bytes stream for the delete operation
 func SerializeDeleteCommand(key string) *bytes.Buffer {
-	del := fmt.Sprintf("delete %s", key)
+	del := fmt.Sprintf("delete %s\r\n", key)
 	delStream := bytes.NewBufferString(del)
 
 	return delStream
