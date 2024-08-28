@@ -29,6 +29,14 @@ func SerializeCASCommand(key string, flags uint16, exptime int, size int, token 
 	return casStream
 }
 
+// Creates the bytes stream for the delete operation
+func SerializeDeleteCommand(key string) *bytes.Buffer {
+	del := fmt.Sprintf("delete %s", key)
+	delStream := bytes.NewBufferString(del)
+
+	return delStream
+}
+
 // Creates the byte stream for the datablock section of the tcp protocol
 func SerializeDataBlock(dataBlock string) *bytes.Buffer {
 	msg := fmt.Sprintf("%s\r\n", dataBlock)

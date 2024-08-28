@@ -432,6 +432,15 @@ func SendGetsCommand(host string, port int, key string) {
 			fmt.Println(message)
 			continue
 		}
-
 	}
+}
+
+func SendDeleteCommand(host string, port int, key string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to the server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
 }

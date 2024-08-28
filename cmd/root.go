@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/luka2220/tools/ccmc/internal/app/client"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +33,21 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+var deleteCmd = &cobra.Command{
+	Use:   "delete",
+	Args:  cobra.ExactArgs(1),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.SendDeleteCommand(host, port, args[0])
+	},
+}
+
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -44,4 +60,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVarP(&host, "host", "o", "localhost", "Host address of tcp client")
 	rootCmd.PersistentFlags().IntVarP(&port, "port", "p", 11211, "Port of the client address")
+
+	// Commands
+	rootCmd.AddCommand(deleteCmd)
 }
