@@ -8,6 +8,7 @@ import (
 
 // Creates the byte stream for the command section of the tcp protocol
 // Valid commands: set, get, add, replace, append, prepend
+// FIX: Add a default case to the switch statement and test with an incorrect command passed in
 func SerializeCommand(cmd string, key string, flags uint16, exptime int, size int) (*bytes.Buffer, error) {
 	switch cmd {
 	case "set", "get", "gets", "add", "replace", "append", "prepend":
