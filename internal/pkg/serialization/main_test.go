@@ -102,6 +102,22 @@ func TestSerializeCommand(t *testing.T) {
 		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t6.String(), "prepend data 0 0 7\r\n")
 		t.Fatal(e)
 	}
+
+	// NOTE: Test case 7 => "gets store42069 1 900 0\r\n"
+	t7, err := SerializeCommand("gets", "store42069", 1, 900, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if t7.Len() != 25 {
+		e := fmt.Sprintf("Buffer size is incorrect, got=%d bytes, expected=%d bytes", t7.Len(), 25)
+		t.Fatal(e)
+	}
+
+	if t7.String() != "gets store42069 1 900 0\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t7.String(), "gets store42069 1 900 0\r\n")
+		t.Fatal(e)
+	}
 }
 
 func TestSerializeCASCommand(t *testing.T) {
@@ -128,6 +144,34 @@ func TestSerializeCASCommand(t *testing.T) {
 
 	if t2.String() != "cas storage 1 900 25 7\r\n" {
 		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "cas storage 1 900 25 7\r\n")
+		t.Fatal(e)
+	}
+}
+
+func TestSerializeDeleteCommand(t *testing.T) {
+	// NOTE: Test case 1 => "delete key\r\n"
+	t1 := SerializeDeleteCommand("key")
+
+	if t1.Len() != 12 {
+		e := fmt.Sprintf("Incorrect buffer size, got=%d, expected=%d", t1.Len(), 12)
+		t.Fatal(e)
+	}
+
+	if t1.String() != "delete key\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t1.String(), "delete key\r\n")
+		t.Fatal(e)
+	}
+
+	// NOTE: Test case 2 => "delete storage54321\r\n"
+	t2 := SerializeDeleteCommand("storage54321")
+
+	if t2.Len() != 21 {
+		e := fmt.Sprintf("Incorrect buffer size, got=%d, expected=%d", t2.Len(), 21)
+		t.Fatal(e)
+	}
+
+	if t2.String() != "delete storage54321\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "delete storage54321\r\n")
 		t.Fatal(e)
 	}
 }

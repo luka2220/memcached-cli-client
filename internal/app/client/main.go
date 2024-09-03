@@ -432,6 +432,45 @@ func SendGetsCommand(host string, port int, key string) {
 			fmt.Println(message)
 			continue
 		}
+	}
+}
 
+func SendDeleteCommand(host string, port int, key string) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to the server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+
+	buffMsg := serialization.SerializeDeleteCommand(key)
+	if _, err = client.conn.Write(buffMsg.Bytes()); err != nil {
+		fmt.Println("Error sending data to server: ", err)
+		return
+	}
+
+	reader := bufio.NewReader(client.conn)
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return
+		}
+
+		if err != nil {
+			fmt.Println("Error reading data from server: ", err)
+			return
+		}
+
+		switch message {
+		case "NOT_FOUND\r\n":
+			fmt.Println("Key not found on server...")
+			return
+		case "DELETED\r\n":
+			return
+		default:
+			continue
+		}
 	}
 }
