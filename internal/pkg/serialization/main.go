@@ -30,12 +30,32 @@ func SerializeCASCommand(key string, flags uint16, exptime int, size int, token 
 	return casStream
 }
 
-// Creates the bytes stream for the delete operation
+// Creates the byte stream for the delete operation
 func SerializeDeleteCommand(key string) *bytes.Buffer {
 	del := fmt.Sprintf("delete %s\r\n", key)
 	delStream := bytes.NewBufferString(del)
 
 	return delStream
+}
+
+// Creates the byte stream for the incr and decr commands
+func SerializeIncrDecrCommand(cmd string, key string, value int) (*bytes.Buffer, error) {
+	var stream *bytes.Buffer
+
+	switch cmd {
+	case "incr":
+		incr := fmt.Sprintf("incr %s %d\r\n", key, value)
+		stream = bytes.NewBufferString(incr)
+		break
+	case "decr":
+		decr := fmt.Sprintf("decr %s %d\r\n", key, value)
+		stream = bytes.NewBufferString(decr)
+		break
+	default:
+		return nil, errors.New("Enter a either the incr or decr command")
+	}
+
+	return stream, nil
 }
 
 // Creates the byte stream for the datablock section of the tcp protocol

@@ -474,3 +474,13 @@ func SendDeleteCommand(host string, port int, key string) {
 		}
 	}
 }
+
+func SendIncrCommand(host string, port int, key string, value int) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to the server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+}
