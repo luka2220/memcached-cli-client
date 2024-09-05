@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/luka2220/tools/ccmc/internal/app/client"
 	"github.com/spf13/cobra"
@@ -59,6 +60,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		value, err := strconv.Atoi(args[1])
+		if err != nil {
+			fmt.Println("Error, the increment value must be an integer")
+			return
+		}
+
+		client.SendIncrCommand(host, port, args[0], value)
 	},
 }
 
