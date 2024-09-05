@@ -24,7 +24,7 @@ clean:
 	rm ./bin/ccmc
 
 # Run the tests for command serialization
-test cmd serialization:
+test serializer:
 	go test -v ./internal/pkg/serialization
 
 # View the makefile commads

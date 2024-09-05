@@ -176,6 +176,37 @@ func TestSerializeDeleteCommand(t *testing.T) {
 	}
 }
 
+func TestSerializeIncrDecrCommand(t *testing.T) {
+	// NOTE: Test case 1 => "incr web_key 2\r\n"
+	t1, err := SerializeIncrDecrCommand("incr", "web_key", 2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if t1.String() != "incr web_key 2\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t1.String(), "incr web_key 2\r\n")
+		t.Fatal(e)
+	}
+
+	// NOTE: Test case 2 => "decr unknown 1\r\n"
+	t2, err := SerializeIncrDecrCommand("decr", "unknown", 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if t2.String() != "decr unknown 1\r\n" {
+		e := fmt.Sprintf("Incorrect buffer string, got=%s, expected=%s", t2.String(), "decr unknown 1\r\n")
+		t.Fatal(e)
+	}
+
+	// NOTE: Test case 3 => "add web_key 2\r\n"
+	_, err = SerializeIncrDecrCommand("add", "web_key", 2)
+	if err == nil {
+		e := fmt.Sprintf("An error should be thrown here for invalid command... eith incr or decr")
+		t.Fatal(e)
+	}
+}
+
 func TestSerializeDataBlock(t *testing.T) {
 	// NOTE: Test case 1 => "Hello, World!\r\n"
 	t1 := SerializeDataBlock("Hello, World!")
