@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"strings"
 
 	"github.com/luka2220/tools/ccmc/internal/pkg/serialization"
 )
@@ -82,15 +81,12 @@ func SendGetCommand(host string, port int, key string) {
 		return
 	}
 
-	_, err = client.conn.Write(cmd.Bytes())
-	if err != nil {
+	if _, err = client.conn.Write(cmd.Bytes()); err != nil {
 		fmt.Printf("An error occured sending data to the client: %v", err)
 		return
 	}
 
 	reader := bufio.NewReader(client.conn)
-
-	var response string
 
 	for {
 		message, err := reader.ReadString('\n')
@@ -103,18 +99,19 @@ func SendGetCommand(host string, port int, key string) {
 			break
 		}
 
-		if message == "END\r\n" {
-			break
+		switch message {
+		case "END\r\n":
+			return
+		case "CLIENT_ERROR\r\n":
+			fmt.Println("An error occured on the client")
+			return
+		case "SERVER_ERROR\r\n":
+			fmt.Println("An error occured on the server")
+			return
+		default:
+			fmt.Println(message)
 		}
-
-		response += message
 	}
-
-	// BUG: Something is going wrong here...
-	// I need to find a better way to deserialize and parse the response from the server...
-	// Another issue if we try to get a key that does not exist and index out of range error is thrown...
-	v := strings.Split(response, "\r\n")
-	fmt.Println(v[len(v)-2])
 }
 
 func SendAddCommand(host string, port int, key string, value string) {
