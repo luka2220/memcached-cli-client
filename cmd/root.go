@@ -70,6 +70,21 @@ to quickly create a Cobra application.`,
 	},
 }
 
+var decrementCmd = &cobra.Command{
+	Use:   "decr",
+	Args:  cobra.ExactArgs(2),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+
+	},
+}
+
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -86,4 +101,5 @@ func init() {
 	// Commands
 	rootCmd.AddCommand(deleteCmd)
 	rootCmd.AddCommand(incrementCmd)
+	rootCmd.AddCommand(decrementCmd)
 }
