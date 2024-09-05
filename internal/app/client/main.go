@@ -522,3 +522,51 @@ func SendIncrCommand(host string, port int, key string, value int) {
 		}
 	}
 }
+
+func SendDecrCommand(host string, port int, key string, value int) {
+	client, err := initClient(host, port)
+	if err != nil {
+		fmt.Println("Error connecting to the server: ", err)
+		return
+	}
+
+	defer client.conn.Close()
+
+	buffCmd, err := serialization.SerializeIncrDecrCommand("decr", key, value)
+	if err != nil {
+		fmt.Println("Error serializing data: ", err)
+		return
+	}
+
+	if _, err = client.conn.Write(buffCmd.Bytes()); err != nil {
+		fmt.Println("Error sending data to server: ", err)
+		return
+	}
+
+	reader := bufio.NewReader(client.conn)
+
+	for {
+		message, err := reader.ReadString('\n')
+		if err == io.EOF {
+			return
+		}
+
+		if err != nil {
+			fmt.Println("Error reading data from the server: ", err)
+			return
+		}
+
+		switch message {
+		case "NOT_FOUND\r\n":
+			fmt.Println("An item with this key has not been found")
+			return
+		case "CLIENT_ERROR\r\n":
+			fmt.Println("Cannot increment or decrement non-numeric value")
+			return
+		default:
+			v := message[0 : len(message)-2]
+			fmt.Println(v)
+			return
+		}
+	}
+}
