@@ -91,6 +91,131 @@ to quickly create a Cobra application.`,
 	},
 }
 
+var appendCmd = &cobra.Command{
+	Use:   "append",
+	Args:  cobra.MatchAll(cobra.ExactArgs(2)),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.SendAppendCommand(host, port, args[0], args[1])
+	},
+}
+
+var setCmd = &cobra.Command{
+	Use:   "set",
+	Args:  cobra.MatchAll(cobra.ExactArgs(2)),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.SendSetCommand(host, port, args[0], args[1])
+	},
+}
+
+var getCmd = &cobra.Command{
+	Use:   "get",
+	Args:  cobra.MatchAll(cobra.ExactArgs(1)),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.SendGetCommand(host, port, args[0])
+	},
+}
+
+var replaceCmd = &cobra.Command{
+	Use:   "replace",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.SendReplaceCommand(host, port, args[0], args[1])
+	},
+}
+
+var prependCmd = &cobra.Command{
+	Use:   "prepend",
+	Args:  cobra.MatchAll(cobra.ExactArgs(2)),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.SendPrependCommmand(host, port, args[0], args[1])
+	},
+}
+
+var casCmd = &cobra.Command{
+	Use:   "cas",
+	Args:  cobra.MatchAll(cobra.ExactArgs(3)),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		token, err := strconv.Atoi(args[2])
+		if err != nil {
+			fmt.Println("Error, the last argument (token) must be a number")
+			return
+		}
+
+		client.SendCasCommand(host, port, args[0], args[1], token)
+	},
+}
+
+var getsCmd = &cobra.Command{
+	Use:   "gets",
+	Args:  cobra.MatchAll(cobra.ExactArgs(1)),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.SendGetsCommand(host, port, args[0])
+	},
+}
+
+var addCmd = &cobra.Command{
+	Use:   "add",
+	Args:  cobra.MatchAll(cobra.ExactArgs(2)),
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		client.SendAddCommand(host, port, args[0], args[1])
+	},
+}
+
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -108,4 +233,12 @@ func init() {
 	rootCmd.AddCommand(deleteCmd)
 	rootCmd.AddCommand(incrementCmd)
 	rootCmd.AddCommand(decrementCmd)
+	rootCmd.AddCommand(appendCmd)
+	rootCmd.AddCommand(setCmd)
+	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(replaceCmd)
+	rootCmd.AddCommand(prependCmd)
+	rootCmd.AddCommand(casCmd)
+	rootCmd.AddCommand(getsCmd)
+	rootCmd.AddCommand(addCmd)
 }
