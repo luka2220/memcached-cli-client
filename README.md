@@ -2,7 +2,7 @@
 
 ## Description
 
-This project aims to create a cli client that can interact with the Memcached server. The client will send commands based on the memcached TCP communication protocol.
+This project aims to create a cli client to interact with the Memcached server. The client will send commands using the Memcached TCP communication protocol.
 
 Memcached is a free, open-source, high-performance, distributed memory object caching system. It is intended to speed up dynamic web applications by reducing database load. 
 It is also an in-memory key-value store for small chunks of arbitrary data retrieved from back-end systems with higher latency. It is simple yet powerful.
@@ -12,17 +12,54 @@ It uses a simple text-based network protocol, making it a great platform to lear
 ## Commands
 
 - host flag (-o): specifies the host where the server is running, default is localhost
-- port flags (-p): specifies te port number the server is running, default is 11211
+- port flags (-p): specifies the port number the server is running, default is 11211
 
-**Set** _store the data associated with the key_ <br>
+**Set** store the data associated with the key <br>
 
-- example ccmc -o lukapiplica.net -p 4206969 set testkey testvalue
+- _ccmc -o lukapiplica.net -p 4206969 set testkey testvalue_
+- the first flag is the host name
+- the second flags is the address
 - the first argument is the key associated with the value
 - the second argument is the value to store
 
-**Get** _retrieve the data associated with the key if it exists_ <br>
+**Get** retrieve the data associated with the key <br>
 
-- example ccmc -o lukapiplica.net -p 4206969 get testkey
-- the first argument is the key to retrieve data from
+- _ccmc get testkey_
+
+**Add** stores the data, but only if the server doesn't already hold data for this key <br>
+
+- _ccmc add testkey "some value, this one is a long string"_
+
+**Replace** stores the data, but only if the server does already hold data for this key <br>
+
+- _ccmc replace testkey "some value, this one is a long string to replace the current value with"_
+
+**Append** stores the data to an existing key after existing data <br>
+
+- _ccmc append testkey "value to append"_
+
+**Prepend** stores the data to an existing key before existing data <br>
+
+- _ccmc append testkey "value to prepend"_
+
+**Cas** check and set operation which means "store this data but only if no one else has updated since I last fetched it." <br>
+
+- _ccmc cas testkey 250 1_
+
+**Gets** gets the value associated with a key, also retrieves a CAS token (Check-And-Set token) <br>
+
+- _ccmc gets testkey_
+
+**Delete** deletes the given key and any data associated with it <br>
+
+- _ccmc delete testkey_
+
+**Increment** increments a key (must have an integer value or will not work) by the amount passed <br>
+
+- _ccmc incr testkey 10_
+
+**Decrement** decrements a key (must have an integer value or will not work) by the amount passed <br>
+
+- _ccmc decr testkey 100_
   
 
