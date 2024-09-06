@@ -9,6 +9,10 @@ It is also an in-memory key-value store for small chunks of arbitrary data retri
 Its simple design promotes quick deployment, and ease of development, and solves many problems facing large data caches. Its relatively simple API is available for most popular languages.
 It uses a simple text-based network protocol, making it a great platform to learn how to build network clients and servers.
 
+## Specification
+
+Check out the [Memcached protocol specification](https://github.com/memcached/memcached/blob/master/doc/protocol.txt) for more in-depth detail and explanation for each command and response
+
 ## Commands
 
 - host flag (-o): specifies the host where the server is running, default is localhost
