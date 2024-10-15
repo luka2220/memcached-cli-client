@@ -66,4 +66,5 @@ Check out the [Memcached protocol specification](https://github.com/memcached/me
 
 - _ccmc decr testkey 100_
   
-
+## Project Details
+Check out an article I wrote about my thought process and development process when building the project [here](https://medium.com/@piplicaluka64/building-a-memcached-cli-client-in-go-493874b30a79)
